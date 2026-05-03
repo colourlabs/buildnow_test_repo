@@ -1,0 +1,16 @@
+name: test-pipeline
+
+env:
+  APP_ENV: test
+
+steps:
+  - name: print env
+    run: echo "Running on branch $BUILDNOW_BRANCH, commit $BUILDNOW_COMMIT"
+
+  - name: plugin test
+    uses: net.colourlabs.test@latest
+    with:
+      name: test! works?
+
+  - name: check workspace
+    run: ls -la $BUILDNOW_WORKSPACE
