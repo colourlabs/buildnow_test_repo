@@ -1,16 +1,36 @@
-name: test-pipeline
+name: hello-c-pipeline
 
 env:
   APP_ENV: test
 
 steps:
-  - name: print env
-    run: echo "Running on branch $BUILDNOW_BRANCH, commit $BUILDNOW_COMMIT"
+  - name: create c file
+    run: |
+      mkdir -p src build
+      cat > src/main.c << 'EOF'
+      #include <stdio.h>
+
+      int main() {
+          printf("test buildnow!\n");
+          return 0;
+      }
+      EOF
+
+  - name: compile
+    run: gcc src/main.c -o build/hello
+
+  - name: run binary
+    run: ./build/hello
 
   - name: plugin test
     plugin: net.colourlabs.test@latest
     with:
-      name: "test! works?"
+      name: "hello binary test"
 
-  - name: check workspace
-    run: ls -la $BUILDNOW_WORKSPACE
+  - name: verify workspace
+    run: ls -R $BUILDNOW_WORKSPACE
+
+artifacts:
+  - name: hello-binary
+    paths:
+      - "build/hello"
